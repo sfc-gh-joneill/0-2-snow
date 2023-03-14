@@ -48,12 +48,14 @@ show file formats in database citibike;
 
 /* GUI under admin menus select compute_wh and up the size from x-small to small (doubleling compute)
 
-alter warehouse compute_wh set warehouse_size='large';
+alter warehouse compute_wh set warehouse_size='small';
 */
 
 -- Copy data into table using Small WH and view 10 results - Note loading time 
 -- Role: SYSADMIN Warehouse: COMPUTE_WH Database: CITIBIKE Schema = PUBLIC
 copy into trips from @citibike_trips file_format=csv PATTERN = '.*csv.*' ;
+
+
 select * from trips limit 10;
 
 
@@ -83,8 +85,11 @@ create or replace warehouse analytics_wh
     initially_suspended = false;  
 */
 
+
 -- Time to run some queries
 -- First look as an analyist 
+use role sysadmin;
+use warehouse analytics_wh;
 select * from trips limit 20;
 
 -- Look at trips by hour including average trip distance and duration. Run this twice to notice the improvments from the results cache. 
@@ -133,6 +138,8 @@ url = 's3://snowflake-workshop-lab/zero-weather-nyc';
 
 -- inspect stage
 list @nyc_weather;
+
+select $1,$2,$3 from @nyc_weather limit 10;
 
 
 -- load and  the semi-structured data
@@ -241,7 +248,13 @@ limit 20;
  -- Playing with roles, lets become and admin and create a junior role to give to ourselves. 
 use role accountadmin;
 create role junior_dba;
-grant role junior_dba to user <USER_NAME_HERE>;
+
+set my_user=
+(select current_user);
+
+select $my_user;
+
+grant role junior_dba to user <COPYPASTE USER HERE>;
 use role junior_dba;
 -- notice our new role cant see a warehouse ? we should change that 
 
@@ -264,9 +277,9 @@ grant usage on database weather to role junior_dba;
 
 -- Become junior dba and see that we now have permissions to compute and data 
 use role junior_dba;
-use warehouse compute_wh;
-use database citibike;
-use schema public;
+
+-- Let us look at some of the usage of the lab thus far
+use role accountadmin;
 
 
 
@@ -275,13 +288,32 @@ use schema public;
 use role accountadmin;
 
 
+create database citishare clone citibike;
+
+use warehouse compute_wh;
+use database citishare;
+use schema public;
+
+set my_user=
+(select current_user);
+
+update trips_dev set start_station_name = $my_user;
+
+select start_station_name from trips_dev limit 10;
 
 
 
--- If necessary, replace "zero_to_snowflake-shared_data" with the name you used for the share
-drop share if exists zero_to_snowflake_shared_data;
---  replace "zero_to_snowflake-shared_data" with the name you used for the share
+
+-- GUI for point and click data sharing
+-- Ensure you know your account identifier
+
+
+--  replace with the name you used for the share
+show shares;
+
 drop share if exists <MY_COOL_SHARE>;
+
+-- Drop everything else
 drop database if exists citibike;
 drop database if exists weather;
 drop warehouse if exists analytics_wh;
