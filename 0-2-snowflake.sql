@@ -81,7 +81,7 @@ create or replace warehouse analytics_wh
     auto_suspend = 300
     auto_resume = true 
     min_cluster_count = 1
-    max_cluster_count = 1
+    max_cluster_count = 4
     initially_suspended = false;  
 */
 
@@ -116,7 +116,8 @@ from trips
 group by 1 order by 2 desc;
 
 -- Time to creat a Zero Copy Clone to create a table for development pourposes. 
-create table trips_dev clone trips; -- Notice no differences between the tables
+-- Notice no differences between the tables
+create table trips_dev clone trips; 
 
 
 -- To pull in weather data that we know is semi-structured we need to create a database. 
