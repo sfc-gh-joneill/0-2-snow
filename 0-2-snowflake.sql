@@ -1,4 +1,7 @@
-/* GUI - Create initial databse 
+//Validate Cloud Region and User Info
+select current_region(), current_account(), current_user(), current_role(), current_warehouse(), current_database();
+
+/* GUI - Create initial database 
 
 use role sysadmin; 
 create or replace database citibike; 
@@ -26,6 +29,10 @@ membership_type string,
 usertype string,
 birth_year integer,
 gender integer);
+
+/*
+GUI - Click into Databases and look at the new database and table that we just loaded data into.
+ */
 
  /* GUI create external stage. Make sure to include the final forward slash (/) at the end of the URL or you will encounter errors later when loading data from the bucket
 
