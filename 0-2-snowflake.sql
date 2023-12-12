@@ -1,4 +1,4 @@
-//Validate Cloud Region and User Info
+--Validate Cloud Region and User Info
 select current_region(), current_account(), current_user(), current_role(), current_warehouse(), current_database();
 
 /* GUI - Create initial database 
