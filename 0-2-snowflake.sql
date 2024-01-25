@@ -81,7 +81,8 @@ file_format=CSV;
 -- GUI navigate back to queries page and examine the 2 copy commands.
 
 -- We Now have data ready to rock. Lets configure an analytics enviornment and take actions as that persona. 
-/* GUI - Lets create the warehouse for our analyst via point and click.
+/* 
+-- GUI - Lets create the warehouse for our analyst via point and click.
 
 create or replace warehouse analytics_wh    
     warehouse_size = large
