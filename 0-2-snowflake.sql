@@ -1,12 +1,21 @@
 --Validate Cloud Region and User Info
 select current_region(), current_account(), current_user(), current_role(), current_warehouse(), current_database();
 
-/* GUI - Create initial database 
+/* GUI - Create initial database & VWH
 
 use role sysadmin; 
 create or replace database citibike; 
 use database citibike;
 use warehouse compute_wh;
+
+create or replace warehouse compute_wh    
+    warehouse_size = small
+    auto_suspend = 300
+    auto_resume = true 
+    min_cluster_count = 1
+    max_cluster_count = 1
+    initially_suspended = false;  
+
 */
 
 
@@ -78,12 +87,9 @@ show warehouses;
 copy into trips from @citibike_trips
 file_format=CSV;
 
--- GUI navigate back to queries page and examine the 2 copy commands.
-
 -- We Now have data ready to rock. Lets configure an analytics enviornment and take actions as that persona. 
-/* 
--- GUI - Lets create the warehouse for our analyst via point and click.
 
+--Create Virtual Warehouse via SQL this time. 
 create or replace warehouse analytics_wh    
     warehouse_size = large
     auto_suspend = 300
@@ -91,7 +97,7 @@ create or replace warehouse analytics_wh
     min_cluster_count = 1
     max_cluster_count = 4
     initially_suspended = false;  
-*/
+
 
 
 -- Time to run some queries
